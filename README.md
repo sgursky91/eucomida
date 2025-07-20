@@ -48,8 +48,9 @@ Este é um projeto desenvolvido como parte do **Trabalho Prático da     discipl
 
 📺 Assista ao vídeo de apresentação do app pelo link abaixo:
 
-🔗 [Link para o vídeo no YouTube](https://youtube.com/seu-video-aqui)  
-*(ou adicione o arquivo de vídeo na pasta do projeto)*
+🔗 [Link para o vídeo no YouTube]
+Link Apresentação Aplicativo: https://www.loom.com/share/a1d28fe1a4934f01ba5cedef9161b802?sid=c18a3619-2b9d-45ac-82d4-50592899fca4
+Link Apresentação Código Fonte: https://www.loom.com/share/e4fae79afc91444cbceb3fe740d7c985?sid=e981f386-4240-4d4a-b4ab-6c2959ac8dd7
 
 ## 🔗 Repositório
 
