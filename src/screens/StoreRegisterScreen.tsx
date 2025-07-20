@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   ScrollView,
   KeyboardAvoidingView,
   Platform,
@@ -19,6 +18,7 @@ import { formatarCNPJ } from '../utils/masks';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppStackParamList } from '../types/navigation';
 import { Loja } from '../types/loja';
+import { store_styles } from '../styles/store_style'; // Importar os estilos adequados
 
 type Props = NativeStackScreenProps<AppStackParamList, 'StoreRegister'>;
 
@@ -104,12 +104,12 @@ export const StoreRegisterScreen = ({ route, navigation }: Props) => {
 
   return (
     <KeyboardAvoidingView
-      style={styles.flex}
+      style={store_styles.flex}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-          <Text style={styles.title}>{lojaEdit ? 'Editar Loja' : 'Cadastro de Loja'}</Text>
+        <ScrollView contentContainerStyle={store_styles.container_list} keyboardShouldPersistTaps="handled">
+          <Text style={store_styles.title}>{lojaEdit ? 'Editar Loja' : 'Cadastro de Loja'}</Text>
 
           <Input label="Nome da Loja" value={nome} onChangeText={setNome} />
           <Input label="Endereço" value={endereco} onChangeText={setEndereco} />
@@ -140,22 +140,3 @@ export const StoreRegisterScreen = ({ route, navigation }: Props) => {
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  flex: {
-    flex: 1,
-  },
-  container: {
-    flexGrow: 1,
-    paddingHorizontal: 24,
-    paddingTop: 48,
-    paddingBottom: 48,
-    backgroundColor: '#fff',
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-});

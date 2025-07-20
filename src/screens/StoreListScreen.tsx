@@ -4,7 +4,6 @@ import {
   View,
   Text,
   FlatList,
-  StyleSheet,
   Alert,
   TouchableOpacity,
 } from 'react-native';
@@ -12,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppStackParamList } from '../types/navigation';
+import { store_styles } from '../styles/store_style';
 
 interface Loja {
   id: string;
@@ -58,18 +58,18 @@ export const StoreListScreen = () => {
   };
 
   const renderItem = ({ item }: { item: Loja }) => (
-    <View style={styles.card}>
-      <View style={styles.details}>
-        <Text style={styles.nome}>{item.nome}</Text>
-        <Text style={styles.endereco}>{item.endereco}</Text>
-        <Text style={styles.cnpj}>CNPJ: {item.cnpj}</Text>
-        <Text style={styles.coord}>Lat: {item.latitude} | Lon: {item.longitude}</Text>
-        <View style={styles.actions}>
-          <TouchableOpacity onPress={() => editarLoja(item)} style={styles.buttonEdit}>
-            <Text style={styles.buttonText}>Editar</Text>
+    <View style={store_styles.card}>
+      <View style={store_styles.details}>
+        <Text style={store_styles.nome}>{item.nome}</Text>
+        <Text style={store_styles.endereco}>{item.endereco}</Text>
+        <Text style={store_styles.cnpj}>CNPJ: {item.cnpj}</Text>
+        <Text style={store_styles.coord}>Lat: {item.latitude} | Lon: {item.longitude}</Text>
+        <View style={store_styles.actions}>
+          <TouchableOpacity onPress={() => editarLoja(item)} style={store_styles.buttonEdit}>
+            <Text style={store_styles.buttonText}>Editar</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => excluirLoja(item.id)} style={styles.buttonDelete}>
-            <Text style={styles.buttonText}>Excluir</Text>
+          <TouchableOpacity onPress={() => excluirLoja(item.id)} style={store_styles.buttonDelete}>
+            <Text style={store_styles.buttonText}>Excluir</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -77,79 +77,14 @@ export const StoreListScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={store_styles.container}>
       <FlatList
         data={lojas}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
-        ListEmptyComponent={<Text style={styles.empty}>Nenhuma loja cadastrada.</Text>}
+        ListEmptyComponent={<Text style={store_styles.empty}>Nenhuma loja cadastrada.</Text>}
       />
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    padding: 16,
-  },
-  card: {
-    marginBottom: 16,
-    padding: 12,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    backgroundColor: '#f9fafb',
-  },
-  details: {
-    flex: 1,
-  },
-  nome: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  endereco: {
-    fontSize: 14,
-    color: '#444',
-    marginBottom: 2,
-  },
-  cnpj: {
-    fontSize: 14,
-    color: '#555',
-    marginBottom: 2,
-  },
-  coord: {
-    fontSize: 13,
-    color: '#666',
-    marginBottom: 6,
-  },
-  actions: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 4,
-  },
-  buttonEdit: {
-    backgroundColor: '#3B82F6',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-  },
-  buttonDelete: {
-    backgroundColor: '#EF4444',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
-  empty: {
-    textAlign: 'center',
-    marginTop: 32,
-    fontSize: 16,
-    color: '#888',
-  },
-});
