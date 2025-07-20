@@ -7,34 +7,27 @@ import {
   Alert,
   TouchableOpacity,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppStackParamList } from '../types/navigation';
 import { store_styles } from '../styles/store_style';
-
-interface Loja {
-  id: string;
-  nome: string;
-  endereco: string;
-  cnpj: string;
-  latitude: string;
-  longitude: string;
-}
+import { listarLojas, excluirLojaPorId } from '../services/storeService';
+import { Loja } from '../types/loja';
 
 export const StoreListScreen = () => {
   const [lojas, setLojas] = useState<Loja[]>([]);
   const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    carregarLojas();
-  }, []);
+    if (isFocused) {
+      carregarLojas();
+    }
+  }, [isFocused]);
 
   const carregarLojas = async () => {
-    const data = await AsyncStorage.getItem('@CatalogoDigitalApp:lojas');
-    if (data) {
-      setLojas(JSON.parse(data));
-    }
+    const lista = await listarLojas();
+    setLojas(lista);
   };
 
   const excluirLoja = (id: string) => {
@@ -44,16 +37,14 @@ export const StoreListScreen = () => {
         text: 'Excluir',
         style: 'destructive',
         onPress: async () => {
-          const atualizadas = lojas.filter((l) => l.id !== id);
-          setLojas(atualizadas);
-          await AsyncStorage.setItem('@CatalogoDigitalApp:lojas', JSON.stringify(atualizadas));
+          await excluirLojaPorId(id);
+          carregarLojas();
         },
       },
     ]);
   };
 
   const editarLoja = (loja: Loja) => {
-    console.log("teste");
     navigation.navigate('StoreRegister', { loja });
   };
 

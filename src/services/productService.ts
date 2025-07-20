@@ -25,11 +25,23 @@ export async function listarProdutos(): Promise<Produto[]> {
 }
 
 export async function atualizarProduto(produto: Produto): Promise<void> {
-  await salvarProduto(produto); // ✅ pode delegar para salvarProduto agora
+  await salvarProduto(produto); 
 }
 
 export async function excluirProdutoPorId(id: string): Promise<void> {
   const produtos = await listarProdutos();
   const atualizados = produtos.filter(p => p.id !== id);
   await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(atualizados));
+}
+
+export async function filtrarProdutosPorNome(filtro: string): Promise<Produto[]> {
+  const produtos = await listarProdutos();
+  return produtos.filter(p =>
+    p.nome.toLowerCase().includes(filtro.toLowerCase())
+  );
+}
+
+export async function buscarProdutoPorId(id: string): Promise<Produto | undefined> {
+  const produtos = await listarProdutos();
+  return produtos.find(p => p.id === id);
 }

@@ -10,7 +10,6 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { validarCNPJ } from '../utils/validators';
@@ -18,10 +17,10 @@ import { formatarCNPJ } from '../utils/masks';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppStackParamList } from '../types/navigation';
 import { Loja } from '../types/loja';
-import { store_styles } from '../styles/store_style'; // Importar os estilos adequados
+import { store_styles } from '../styles/store_style';
+import { salvarLoja } from '../services/storeService';
 
 type Props = NativeStackScreenProps<AppStackParamList, 'StoreRegister'>;
-
 
 export const StoreRegisterScreen = ({ route, navigation }: Props) => {
   const lojaEdit = route.params?.loja;
@@ -69,33 +68,28 @@ export const StoreRegisterScreen = ({ route, navigation }: Props) => {
     }
 
     try {
-      const dadosExistentes = await AsyncStorage.getItem('@CatalogoDigitalApp:lojas');
-      const lojas = dadosExistentes ? JSON.parse(dadosExistentes) : [];
+      const loja: Loja = {
+        id: lojaEdit?.id ?? Date.now().toString(),
+        nome,
+        endereco,
+        cnpj,
+        latitude,
+        longitude,
+      };
+
+      await salvarLoja(loja);
+
+      Alert.alert(
+        'Sucesso',
+        lojaEdit ? 'Loja atualizada com sucesso!' : 'Loja cadastrada com sucesso!'
+      );
 
       if (lojaEdit) {
-        const lojasAtualizadas = lojas.map((l: Loja) =>
-          l.id === lojaEdit.id
-            ? { ...l, nome, endereco, cnpj, latitude, longitude }
-            : l
-        );
-        await AsyncStorage.setItem('@CatalogoDigitalApp:lojas', JSON.stringify(lojasAtualizadas));
-        Alert.alert('Sucesso', 'Loja atualizada com sucesso!');
+        navigation.goBack();
       } else {
-        const novaLoja: Loja = {
-          id: Date.now().toString(),
-          nome,
-          endereco,
-          cnpj,
-          latitude,
-          longitude,
-        };
-        lojas.push(novaLoja);
-        await AsyncStorage.setItem('@CatalogoDigitalApp:lojas', JSON.stringify(lojas));
-        Alert.alert('Sucesso', 'Loja cadastrada com sucesso!');
         limparCampos();
+        navigation.navigate('StoreList');
       }
-
-      navigation.goBack();
     } catch (error) {
       Alert.alert('Erro', 'Falha ao salvar a loja.');
       console.error(error);

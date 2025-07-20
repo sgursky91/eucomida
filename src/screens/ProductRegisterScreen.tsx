@@ -14,23 +14,35 @@ import { Button } from '../components/Button';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AppStackParamList } from '../types/navigation';
 import { Produto } from '../types/produto';
-import { salvarProduto } from '../services/productService';
-import { product_styles }from '../styles/product_styles';
+import { salvarProduto, atualizarProduto, buscarProdutoPorId } from '../services/productService';
+import { product_styles } from '../styles/product_styles';
 
 type Props = NativeStackScreenProps<AppStackParamList, 'ProductRegister'>;
 
 export const ProductRegisterScreen = ({ route, navigation }: Props) => {
   const produtoEdicao = route.params?.produto;
 
-  const [nome, setNome] = useState(produtoEdicao?.nome || '');
-  const [descricao, setDescricao] = useState(produtoEdicao?.descricao || '');
-  const [preco, setPreco] = useState(produtoEdicao?.preco || '');
-  const [imagem, setImagem] = useState(produtoEdicao?.imagem || '');
+  const [nome, setNome] = useState('');
+  const [descricao, setDescricao] = useState('');
+  const [preco, setPreco] = useState('');
+  const [imagem, setImagem] = useState('');
 
   useEffect(() => {
-    if (produtoEdicao) {
-      navigation.setOptions({ title: 'Editar Produto' });
-    }
+    const carregarProduto = async () => {
+      if (produtoEdicao?.id) {
+        const produto = await buscarProdutoPorId(produtoEdicao.id);
+        if (produto) {
+          setNome(produto.nome);
+          setDescricao(produto.descricao);
+          setPreco(produto.preco);
+          setImagem(produto.imagem);
+        }
+        navigation.setOptions({ title: 'Editar Produto' });
+      } else {
+        navigation.setOptions({ title: 'Cadastro de Produto' });
+      }
+    };
+    carregarProduto();
   }, []);
 
   const limparCampos = () => {
@@ -74,8 +86,11 @@ export const ProductRegisterScreen = ({ route, navigation }: Props) => {
     };
 
     try {
-      await salvarProduto(novoProduto);
-
+      if (produtoEdicao) {
+        await atualizarProduto(novoProduto);
+      } else {
+        await salvarProduto(novoProduto);
+      }
       Alert.alert(
         'Sucesso',
         produtoEdicao ? 'Produto atualizado com sucesso!' : 'Produto cadastrado com sucesso!'

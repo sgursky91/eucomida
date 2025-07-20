@@ -13,7 +13,7 @@ import { useNavigation, useIsFocused } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppStackParamList } from '../types/navigation';
 import { Produto } from '../types/produto';
-import { listarProdutos, excluirProdutoPorId } from '../services/productService';
+import { listarProdutos, excluirProdutoPorId, filtrarProdutosPorNome } from '../services/productService';
 import { product_styles } from '../styles/product_styles';
 
 export const ProductListScreen = () => {
@@ -22,14 +22,26 @@ export const ProductListScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
   const isFocused = useIsFocused();
 
-  useEffect(() => {
+ useEffect(() => {
     if (isFocused) {
       carregarProdutos();
     }
   }, [isFocused]);
 
+  useEffect(() => {
+    if (filtro.trim() === '') {
+      carregarProdutos();
+    } else {
+      filtrar();
+    }
+  }, [filtro]);
+
   const carregarProdutos = async () => {
     const lista = await listarProdutos();
+    setProdutos(lista);
+  };
+    const filtrar = async () => {
+    const lista = await filtrarProdutosPorNome(filtro);
     setProdutos(lista);
   };
 
@@ -77,10 +89,6 @@ export const ProductListScreen = () => {
     </View>
   );
 
-  const produtosFiltrados = produtos.filter((p) =>
-    p.nome.toLowerCase().includes(filtro.toLowerCase())
-  );
-
   return (
     <View style={product_styles.containerList}>
       <TextInput
@@ -91,7 +99,7 @@ export const ProductListScreen = () => {
       />
 
       <FlatList
-        data={produtosFiltrados}
+        data={produtos}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         ListEmptyComponent={<Text style={product_styles.empty}>Nenhum produto cadastrado.</Text>}

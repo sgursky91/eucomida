@@ -7,28 +7,28 @@ import { useAuth } from '../context/AuthContext';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../types/navigation';
 import { login_styles } from '../styles/login_styles';
+import { autenticarUsuario } from '../services/authService';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
 export const LoginScreen = ({ navigation }: Props) => {
-  const { login } = useAuth();
+  const { login } = useAuth(); // Supondo que você tenha setUser no contexto
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
-    setErro('');
-    setLoading(true);
+ const handleLogin = async () => {
+  setErro('');
+  setLoading(true);
 
-    const sucesso = await login(email, senha);
+  const sucesso = await login(email, senha);
 
-    setLoading(false);
+  setLoading(false);
 
-    if (!sucesso) {
-      setErro('Usuário ou senha inválidos');
-    }
-  };
+  if (!sucesso) {
+    setErro('Usuário ou senha inválidos');
+  }};
 
   return (
     <View style={login_styles.container}>
@@ -52,4 +52,3 @@ export const LoginScreen = ({ navigation }: Props) => {
     </View>
   );
 };
-

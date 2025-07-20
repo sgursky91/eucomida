@@ -6,21 +6,13 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Input } from '../components/Input';
 import { Button } from '../components/Button';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../types/navigation';
 import register_styles from '../styles/register_styles';
-
-interface Usuario {
-  id: string;
-  nome: string;
-  email: string;
-  senha: string;
-  tipo: 'cliente' | 'admin';
-}
+import { salvarUsuario, buscarUsuarioPorEmail } from '../services/userService';
 
 export const RegisterScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
@@ -44,17 +36,14 @@ export const RegisterScreen = () => {
     }
 
     try {
-      const usuariosJSON = await AsyncStorage.getItem('@CatalogoDigitalApp:usuarios');
-      const usuarios: Usuario[] = usuariosJSON ? JSON.parse(usuariosJSON) : [];
+      const usuarioExistente = await buscarUsuarioPorEmail(email);
 
-      const emailExistente = usuarios.some((u) => u.email.toLowerCase() === email.toLowerCase());
-
-      if (emailExistente) {
+      if (usuarioExistente) {
         Alert.alert('Erro', 'Este e-mail já está cadastrado.');
         return;
       }
 
-      const novoUsuario: Usuario = {
+      const novoUsuario = {
         id: Date.now().toString(),
         nome,
         email,
@@ -62,8 +51,7 @@ export const RegisterScreen = () => {
         tipo,
       };
 
-      usuarios.push(novoUsuario);
-      await AsyncStorage.setItem('@CatalogoDigitalApp:usuarios', JSON.stringify(usuarios));
+      await salvarUsuario(novoUsuario);
 
       Alert.alert('Sucesso', 'Cadastro realizado com sucesso!', [
         { text: 'OK', onPress: () => navigation.navigate('Login') },
