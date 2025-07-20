@@ -15,12 +15,16 @@ import { AppStackParamList } from '../types/navigation';
 import { Produto } from '../types/produto';
 import { listarProdutos, excluirProdutoPorId, filtrarProdutosPorNome } from '../services/productService';
 import { product_styles } from '../styles/product_styles';
+import { useAuth } from '../context/AuthContext';
+import { isAdmin } from '../utils/privilege';
 
 export const ProductListScreen = () => {
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [filtro, setFiltro] = useState('');
   const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
   const isFocused = useIsFocused();
+  const { user } = useAuth();
+  const admin = isAdmin(user ?? undefined);
 
  useEffect(() => {
     if (isFocused) {
@@ -77,14 +81,16 @@ export const ProductListScreen = () => {
         <Text style={product_styles.nome}>{item.nome}</Text>
         <Text style={product_styles.descricao}>{item.descricao}</Text>
         <Text style={product_styles.preco}>R$ {item.preco}</Text>
-        <View style={product_styles.actions}>
-          <TouchableOpacity onPress={() => editarProduto(item)} style={product_styles.buttonEdit}>
-            <Text style={product_styles.buttonText}>Editar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => excluirProduto(item.id)} style={product_styles.buttonDelete}>
-            <Text style={product_styles.buttonText}>Excluir</Text>
-          </TouchableOpacity>
-        </View>
+         {admin && (
+          <View style={product_styles.actions}>
+            <TouchableOpacity onPress={() => editarProduto(item)} style={product_styles.buttonEdit}>
+              <Text style={product_styles.buttonText}>Editar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => excluirProduto(item.id)} style={product_styles.buttonDelete}>
+              <Text style={product_styles.buttonText}>Excluir</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );

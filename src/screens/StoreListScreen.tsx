@@ -13,11 +13,15 @@ import { AppStackParamList } from '../types/navigation';
 import { store_styles } from '../styles/store_style';
 import { listarLojas, excluirLojaPorId } from '../services/storeService';
 import { Loja } from '../types/loja';
+import { useAuth } from '../context/AuthContext';
+import { isAdmin } from '../utils/privilege';
 
 export const StoreListScreen = () => {
   const [lojas, setLojas] = useState<Loja[]>([]);
   const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
   const isFocused = useIsFocused();
+  const { user } = useAuth();
+  const admin = isAdmin(user ?? undefined);
 
   useEffect(() => {
     if (isFocused) {
@@ -54,14 +58,16 @@ export const StoreListScreen = () => {
         <Text style={store_styles.nome}>{item.nome}</Text>
         <Text style={store_styles.endereco}> {[item.logradouro, item.numero, item.complemento].filter(Boolean).join(' ')}</Text>
         <Text style={store_styles.cnpj}>CNPJ: {item.cnpj}</Text>
-        <View style={store_styles.actions}>
-          <TouchableOpacity onPress={() => editarLoja(item)} style={store_styles.buttonEdit}>
-            <Text style={store_styles.buttonText}>Editar</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => excluirLoja(item.id)} style={store_styles.buttonDelete}>
-            <Text style={store_styles.buttonText}>Excluir</Text>
-          </TouchableOpacity>
-        </View>
+          {admin && (
+          <View style={store_styles.actions}>
+            <TouchableOpacity onPress={() => editarLoja(item)} style={store_styles.buttonEdit}>
+              <Text style={store_styles.buttonText}>Editar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => excluirLoja(item.id)} style={store_styles.buttonDelete}>
+              <Text style={store_styles.buttonText}>Excluir</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );
