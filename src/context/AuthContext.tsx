@@ -1,12 +1,12 @@
 // AuthContext.tsx - criado automaticamente
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { User } from '../types/user';
+import { Usuario } from '../types/usuario';
 
 interface AuthContextData {
-  user: User | null;
+  user: Usuario | null;
   login: (email: string, senha: string) => Promise<boolean>;
-  register: (user: Omit<User, 'senha'> & { senha: string }) => Promise<boolean>;
+  register: (user: Omit<Usuario, 'senha'> & { senha: string }) => Promise<boolean>;
   logout: () => void;
   isAuthenticated: boolean;
   loading: boolean;
@@ -20,7 +20,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<Usuario | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const login = async (email: string, senha: string): Promise<boolean> => {
     try {
       const usersJSON = await AsyncStorage.getItem('@CatalogoDigitalApp:usuarios');
-      const users: User[] = usersJSON ? JSON.parse(usersJSON) : [];
+      const users: Usuario[] = usersJSON ? JSON.parse(usersJSON) : [];
 
       const found = users.find(
         (u) => u.email.toLowerCase() === email.toLowerCase() && u.senha === senha
@@ -56,15 +56,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const register = async (userData: Omit<User, 'senha'> & { senha: string }): Promise<boolean> => {
+  const register = async (userData: Omit<Usuario, 'senha'> & { senha: string }): Promise<boolean> => {
     try {
       const usersJSON = await AsyncStorage.getItem('@CatalogoDigitalApp:usuarios');
-      const users: User[] = usersJSON ? JSON.parse(usersJSON) : [];
+      const users: Usuario[] = usersJSON ? JSON.parse(usersJSON) : [];
 
       const exists = users.some((u) => u.email.toLowerCase() === userData.email.toLowerCase());
       if (exists) return false;
 
-      const newUser: User = { ...userData };
+      const newUser: Usuario = { ...userData };
       users.push(newUser);
 
       await AsyncStorage.setItem('@CatalogoDigitalApp:usuarios', JSON.stringify(users));

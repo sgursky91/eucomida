@@ -1,12 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-export interface Usuario {
-  id: string;
-  nome: string;
-  email: string;
-  senha: string;
-  tipo: 'cliente' | 'admin';
-}
+import { Usuario } from '../types/usuario';
 
 const STORAGE_KEY = '@CatalogoDigitalApp:usuarios';
 

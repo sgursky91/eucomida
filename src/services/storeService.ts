@@ -1,13 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-export interface Loja {
-  id: string;
-  nome: string;
-  endereco: string;
-  cnpj: string;
-  latitude: string;
-  longitude: string;
-}
+import { Loja } from '../types/loja';
 
 const STORAGE_KEY = '@CatalogoDigitalApp:lojas';
 

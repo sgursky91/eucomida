@@ -1,8 +1,8 @@
 // authService.ts - criado automaticamente
 import { buscarUsuarioPorEmail } from './userService';
-import { User } from '../types/user';
+import { Usuario } from '../types/usuario';
 
-export async function autenticarUsuario(email: string, senha: string): Promise<User | null> {
+export async function autenticarUsuario(email: string, senha: string): Promise<Usuario | null> {
   const usuario = await buscarUsuarioPorEmail(email);
   if (usuario && usuario.senha === senha) {
     return usuario;

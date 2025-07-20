@@ -1,5 +1,5 @@
-import { User } from '../types/user';
+import { Usuario } from '../types/usuario';
 
-export const isAdmin = (user?: User): boolean => {
+export const isAdmin = (user?: Usuario): boolean => {
   return user?.tipo === 'admin';
 };

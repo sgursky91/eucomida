@@ -52,9 +52,8 @@ export const StoreListScreen = () => {
     <View style={store_styles.card}>
       <View style={store_styles.details}>
         <Text style={store_styles.nome}>{item.nome}</Text>
-        <Text style={store_styles.endereco}>{item.endereco}</Text>
+        <Text style={store_styles.endereco}> {[item.logradouro, item.numero, item.complemento].filter(Boolean).join(' ')}</Text>
         <Text style={store_styles.cnpj}>CNPJ: {item.cnpj}</Text>
-        <Text style={store_styles.coord}>Lat: {item.latitude} | Lon: {item.longitude}</Text>
         <View style={store_styles.actions}>
           <TouchableOpacity onPress={() => editarLoja(item)} style={store_styles.buttonEdit}>
             <Text style={store_styles.buttonText}>Editar</Text>

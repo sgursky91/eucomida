@@ -1,5 +1,6 @@
 // user.ts - criado automaticamente
-export interface User {
+export interface Usuario {
+  id: string;
   email: string;
   senha: string;
   nome: string;
