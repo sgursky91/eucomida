@@ -14,12 +14,14 @@ import { gerarDicaIA } from '../services/iaService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import home_styles from '../styles/home_styles';
 import { Produto } from '../types/produto';
+import { isAdmin } from '../utils/privilege';
 
 export const HomeScreen = () => {
   const { user, logout } = useAuth();
   const navigation = useNavigation();
   const [dica, setDica] = useState('');
   const [carregando, setCarregando] = useState(false);
+  const admin = isAdmin(user ?? undefined);
 
   const buscarProdutos = async (): Promise<Produto[]> => {
     const data = await AsyncStorage.getItem('@CatalogoDigitalApp:produtos');
@@ -69,11 +71,14 @@ export const HomeScreen = () => {
         }
       >
         <Text style={home_styles.welcome}>Bem-vindo, {user?.nome}!</Text>
-
         <View style={home_styles.menuContainer}>
-          <MenuButton title="Cadastrar Loja" screen="StoreRegister" />
+          {admin && (
+            <>
+              <MenuButton title="Cadastrar Loja" screen="StoreRegister" />
+              <MenuButton title="Cadastrar Produto" screen="ProductRegister" />
+            </>
+          )}
           <MenuButton title="Lista de Lojas" screen="StoreList" />
-          <MenuButton title="Cadastrar Produto" screen="ProductRegister" />
           <MenuButton title="Lista de Produtos" screen="ProductList" />
           <MenuButton title="Sair" onPress={logout} color="#DC2626" />
         </View>
